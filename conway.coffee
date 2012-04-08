@@ -6,6 +6,8 @@
 # Implementation Notes:
 #  * The board wraps around rather than being infinite. Any entity/cell that
 #    moves off of one edge appears on the opposite edge.
+#  * Uses two pre-allocated buffers to save runtime memory allocation. Each
+#    buffer is a one-dimensional array.
 ###############################################################################
 
 canvas = $('#conway')[0]
@@ -20,31 +22,13 @@ entities_y = Math.ceil(canvas.height / entity_size)
 # The number of entities in our board.
 num_entities = entities_x * entities_y
 
-# A single dimensional array to store all the entities. Default value random
+# Store for the JavaScript setInterval timerID for the 'play' functionality.
+timerID = 0
+
+# A single dimensional array to store all the entities. Default value random.
 # Note: uses row-major ordering
 entities = new Array(num_entities)
 new_entities = new Array(num_entities)
-
-# Initialise the board to random entries (50% chance of being alive or dead)
-initialise = -> for i in [0...num_entities]
-  entities[i] = Math.floor(Math.random() + 0.5)
-  new_entities[i] = entities[i]
-
-# Render the board
-render = ->
-  if canvas.getContext
-    ctx = canvas.getContext('2d')
-    ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    for i in [0..num_entities]
-      x = i % entities_x
-      y = Math.floor(i / entities_x)
-      if entities[i] is 1
-        ctx.fillStyle = "orange"
-        ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
-
-  $("#iterationNumber").text(iterationCount)
 
 # This contains the coordinates to access the 8 surrounding neighbours by means
 # of an offset in a one-dimensional array.
@@ -53,6 +37,29 @@ grid = [
   -1,   1,
   -1 + entities_x, entities_x, 1 + entities_x
 ]
+
+# Initialise the board to random entries (50% chance of being alive or dead).
+initialise = -> for i in [0...num_entities]
+  entities[i] = Math.floor(Math.random() + 0.5)
+  new_entities[i] = entities[i]
+  iterationCount = 0
+
+# Render the board
+render = ->
+  if canvas.getContext
+    ctx = canvas.getContext('2d')
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "orange"
+
+    for i in [0..num_entities]
+      x = i % entities_x
+      y = Math.floor(i / entities_x)
+      if entities[i] is 1
+        ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
+
+  $("#iterationNumber").text(iterationCount)
+
 
 # A single iteration of Conway's Game of Life. Do not modify the current board
 # (entities). Any changes go into the buffer (new_entities), which is then
@@ -112,6 +119,8 @@ tick = ->
   step()
   render()
 
+# Allow somebody to click the mouse and toggle the status of a cell on the
+# board.
 toggleEntity = (event) ->
   row = Math.floor((event.pageX - $("#conway").offset().left) / entity_size)
   column = Math.floor((event.pageY - $("#conway").offset().top) / entity_size)
@@ -125,7 +134,7 @@ $('#play').click -> timerID = setInterval tick, 60
 $("#pause").click -> clearInterval(timerID)
 $("#stepper").click -> tick()
 $("#conway").click -> toggleEntity(event)
-$("#randomise").click -> 
+$("#randomise").click ->
   clearInterval(timerID)
   initialise()
   render()
