@@ -20,17 +20,18 @@ initialise = -> for i in [0...num_entities]
   new_entities[i] = entities[i]
 
 render = -> for i in [0..num_entities]
-    x = i % entities_x
-    y = Math.floor(i / entities_x)
-    if canvas.getContext
-      ctx = canvas.getContext('2d')
-      if entities[i] is 1
-        ctx.fillStyle = "orange"
-      else
-        ctx.fillStyle = "white"
-      ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
+  x = i % entities_x
+  y = Math.floor(i / entities_x)
+  if canvas.getContext
+    ctx = canvas.getContext('2d')
+    if entities[i] is 1
+      ctx.fillStyle = "orange"
+    else
+      ctx.fillStyle = "white"
+    ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
 
-    $("#iterationNumber").text(iterationCount)
+  $("#iterationNumber").text(iterationCount)
+
 grid = [
   -1 + -1 * entities_x, -1 * entities_x, 1 + -1 * entities_x,
   -1,   1,
@@ -87,15 +88,15 @@ step = ->
   iterationCount++
 
 tick = ->
-    console.log "ticking"
-    step()
-    render()
+  console.log "ticking"
+  step()
+  render()
 
 toggleEntity = (event) ->
-    row = Math.floor((event.pageX - $("#conway").offset().left) / entity_size)
-    column = Math.floor((event.pageY - $("#conway").offset().top) / entity_size)
-    entities[entities_x * column + row] = 1 - entities[entities_x * column + row]
-    render()
+  row = Math.floor((event.pageX - $("#conway").offset().left) / entity_size)
+  column = Math.floor((event.pageY - $("#conway").offset().top) / entity_size)
+  entities[entities_x * column + row] = 1 - entities[entities_x * column + row]
+  render()
 
 initialise()
 render()
