@@ -19,5 +19,8 @@ out by the Wikipedia page:
 
 Usage
 =====
-In order to run this yourself, you must execute the Makefile. This will compile
-the CoffeeScript into JavaScript. Then simply open `index.html` in your browser.
+In order to run this yourself, simply open `index.html` in your browser.
+
+If you want to make changes, modify the `conway.coffee` file then execute the
+Makefile. This requires you to have the CoffeeScript Compiler (and Node.js)
+installed on your machine.
