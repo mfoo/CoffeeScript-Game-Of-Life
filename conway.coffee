@@ -1,4 +1,5 @@
 canvas = $('#conway')[0]
+iterationCount = 0
 
 # Specify the width and height of the square used to draw the entities.
 entity_size = 10
@@ -29,6 +30,7 @@ render = -> for i in [0..num_entities]
         ctx.fillStyle = "white"
       ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
 
+    $("#iterationNumber").text(iterationCount)
 grid = [
   -1 + -1 * entities_x, -1 * entities_x, 1 + -1 * entities_x,
   -1,   1,
@@ -82,6 +84,7 @@ step = ->
   tmp = entities
   entities = new_entities
   new_entities = tmp
+  iterationCount++
 
 tick = ->
     console.log "ticking"
