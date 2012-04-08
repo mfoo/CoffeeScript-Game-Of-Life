@@ -96,7 +96,9 @@ toggleEntity = (event) ->
 
 render()
 
-$('#stepper').click -> setInterval tick, 60
+timerID = 0
 
-$("#conway").click ->
-    toggleEntity(event)
+$('#play').click -> timerID = setInterval tick, 60
+$("#pause").click -> clearInterval(timerID)
+$("#stepper").click -> tick()
+$("#conway").click -> toggleEntity(event)
