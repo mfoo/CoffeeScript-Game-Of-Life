@@ -31,16 +31,18 @@ initialise = -> for i in [0...num_entities]
   new_entities[i] = entities[i]
 
 # Render the board
-render = -> for i in [0..num_entities]
-  x = i % entities_x
-  y = Math.floor(i / entities_x)
+render = ->
   if canvas.getContext
     ctx = canvas.getContext('2d')
-    if entities[i] is 1
-      ctx.fillStyle = "orange"
-    else
-      ctx.fillStyle = "white"
-    ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    for i in [0..num_entities]
+      x = i % entities_x
+      y = Math.floor(i / entities_x)
+      if entities[i] is 1
+        ctx.fillStyle = "orange"
+        ctx.fillRect(entity_size * x, entity_size * y, entity_size, entity_size)
 
   $("#iterationNumber").text(iterationCount)
 
@@ -58,59 +60,55 @@ grid = [
 step = ->
   for i in [0..num_entities - 1]
     # Get the number of live neighbours from the previous turn.
-    # Assume that boundaries wrap around to the other side.
-    x = i % entities_x
-    y = Math.floor(i / entities_x)
     live_neighbours = 0
 
     for j in grid
       x = (i + j) % entities_x
       y = Math.floor((i + j) / entities_x)
+
+      # Wrap around the edge of the board.
       if x < 0
         x = entities_x + x
       if y < 0
         y = entities_y + y
-
       if x >= entities_x
         x = entities_x - x
       if y >= entities_y
         y = entities_y - y
-      if canvas.getContext
-        ctx = canvas.getContext('2d')
-        ctx.fillStyle = "red"
-        if entities[y * entities_x + x] is 1
-          live_neighbours += 1
 
-        new_entities[i] = entities[i]
+      if entities[y * entities_x + x] is 1
+        live_neighbours += 1
 
-        # Any live cell with fewer than two live neighbours dies, as if caused
-        # by under-population.
-        if live_neighbours < 2 and entities[i] is 1
-            new_entities[i] = 0
+      new_entities[i] = entities[i]
 
-        # Any live cell with two or three live neighbours lives on to the next
-        # generation.
-        if (live_neighbours is 2 or live_neighbours is 3) and entities[i] is 1
-            new_entities[i] = 1
+      # Any live cell with fewer than two live neighbours dies, as if caused
+      # by under-population.
+      if live_neighbours < 2 and entities[i] is 1
+          new_entities[i] = 0
 
-        # Any live cell with more than three live neighbours dies, as if by
-        # overcrowding.
-        if live_neighbours > 3 and entities[i] is 1
-            new_entities[i] = 0
+      # Any live cell with two or three live neighbours lives on to the next
+      # generation.
+      if (live_neighbours is 2 or live_neighbours is 3) and entities[i] is 1
+          new_entities[i] = 1
 
-        # Any dead cell with exactly three live neighbours becomes a live cell,
-        # as if by reproduction.
-        if live_neighbours is 3 and entities[i] is 0
-            new_entities[i] = 1
+      # Any live cell with more than three live neighbours dies, as if by
+      # overcrowding.
+      if live_neighbours > 3 and entities[i] is 1
+          new_entities[i] = 0
+
+      # Any dead cell with exactly three live neighbours becomes a live cell,
+      # as if by reproduction.
+      if live_neighbours is 3 and entities[i] is 0
+          new_entities[i] = 1
 
   # Swap buffers
   tmp = entities
   entities = new_entities
   new_entities = tmp
+
   iterationCount++
 
 tick = ->
-  console.log "ticking"
   step()
   render()
 
@@ -122,8 +120,6 @@ toggleEntity = (event) ->
 
 initialise()
 render()
-
-timerID = 0
 
 $('#play').click -> timerID = setInterval tick, 60
 $("#pause").click -> clearInterval(timerID)
