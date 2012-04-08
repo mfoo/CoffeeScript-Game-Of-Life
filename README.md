@@ -1,7 +1,7 @@
 Conway's Game of Life
 =====================
 
-![Screenshot](screenshot.png "Conway's Game of Life")
+![Screenshot](https://github.com/mfoo/CoffeeScript-Game-Of-Life/raw/master/screenshot.png "Conway's Game of Life")
 
 This is a [CoffeeScript](http://coffeescript.org/) implementation of [Conway's
 Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) using the
@@ -19,4 +19,5 @@ out by the Wikipedia page:
 
 Usage
 =====
-In order to run this yourself, you must execute the Makefile. This will compile the CoffeeScript into JavaScript. Then simply open `index.html` in your browser.
+In order to run this yourself, you must execute the Makefile. This will compile
+the CoffeeScript into JavaScript. Then simply open `index.html` in your browser.
