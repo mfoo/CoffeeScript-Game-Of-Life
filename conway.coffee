@@ -15,7 +15,7 @@ num_entities = entities_x * entities_y
 entities = new Array(num_entities)
 new_entities = new Array(num_entities)
 
-for i in [0...num_entities]
+initialise = -> for i in [0...num_entities]
   entities[i] = Math.floor(Math.random() + 0.5)
   new_entities[i] = entities[i]
 
@@ -97,6 +97,7 @@ toggleEntity = (event) ->
     entities[entities_x * column + row] = 1 - entities[entities_x * column + row]
     render()
 
+initialise()
 render()
 
 timerID = 0
@@ -105,3 +106,7 @@ $('#play').click -> timerID = setInterval tick, 60
 $("#pause").click -> clearInterval(timerID)
 $("#stepper").click -> tick()
 $("#conway").click -> toggleEntity(event)
+$("#randomise").click -> 
+  clearInterval(timerID)
+  initialise()
+  render()
